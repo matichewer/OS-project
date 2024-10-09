@@ -13,8 +13,13 @@ sem_t equipar_moto;
 void* operario_arma_ruedas(void* arg) {
     while(1) {
         sem_wait(&armar_ruedas);
-        printf("Armando ruedas...\n");
+        printf("Poniendo primer rueda...\n");
         sleep(1);
+
+        sem_wait(&armar_ruedas);
+        printf("Poniendo segunda rueda...\n");
+        sleep(1);
+
         sem_post(&armar_cuadro);
     }
 }
@@ -60,12 +65,14 @@ void* operario_equipa_moto(void* arg) {
         sem_wait(&equipar_moto);
         printf("No hay equipamiento extra, comenzando a armar otra moto...\n\n");
         sleep(1);
-        sem_post(&armar_ruedas);
+        sem_post(&armar_ruedas); // para primer rueda
+        sem_post(&armar_ruedas); // para segunda rueda
 
         sem_wait(&equipar_moto);    
         printf("Equipando moto...\n\n");
         sleep(1);
-        sem_post(&armar_ruedas);
+        sem_post(&armar_ruedas); // para primer rueda
+        sem_post(&armar_ruedas); // para segunda rueda
     }
 }
 
