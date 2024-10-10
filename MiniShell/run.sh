@@ -4,7 +4,6 @@
 MAIN="main"
 
 # Si no existe, se crea la carpeta "bin" para guardar el ejecutable
-# La carpeta "bin" ya está agregada al ".gitignore"
 mkdir -p bin/comandos
 
 # Compilar todos los archivos .c excepto el archivo main.c
