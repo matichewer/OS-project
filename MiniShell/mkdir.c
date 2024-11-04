@@ -16,7 +16,7 @@ void main(int argc, char *param[]){
 			printf("El directorio fue creado exitosamente.\n \n");
 		}
 		else {
-			perror("Error al crear el directorio \n \n");
+			perror("Error al crear el directorio");
 		}		
 	}
 }

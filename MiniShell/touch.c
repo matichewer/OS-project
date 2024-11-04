@@ -17,10 +17,10 @@ void main(int argc, char *param[]){
 	else {    
         file_descriptor = syscall(SYS_open, param[1], O_CREAT );
         if (file_descriptor == -1){
-            perror("Error al abrir el archivo \n\n");
+            perror("Error al abrir el archivo");
         } else {
-            printf("Archivo fue creado exitosamente.\n\n");
             syscall(SYS_close, file_descriptor);
+            printf("Archivo fue creado exitosamente.\n\n");
         }
     }
 }

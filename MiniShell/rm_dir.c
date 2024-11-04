@@ -14,7 +14,7 @@ void main(int argc, char *param[]){
 		if (resultado == 0) {
 			printf("Directorio eliminado exitosamente.\n\n");
 		} else {
-			perror("Error al eliminar el directorio.\n\n");
+			perror("Error al eliminar el directorio");
 		}
 	}
 }

@@ -17,7 +17,7 @@ void main(int argc, char *param[]){
 		dir = opendir(param[1]);
 
 		if (dir == NULL){
-			perror("Error al abrir el directorio \n \n");
+			perror("Error al abrir el directorio");
 		} else {
 			while ((entry = readdir(dir)) != NULL) {
 				printf("%s\n", entry->d_name);

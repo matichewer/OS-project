@@ -8,7 +8,7 @@
 void main(int argc,char *param[]){
 
     int file_descriptor;
-    char buffer[1024];  // Buffer para almacenar los datos leídos
+    char buffer[2048];
     ssize_t bytes_read;
         
     if(param[1]==NULL){
@@ -16,11 +16,11 @@ void main(int argc,char *param[]){
     } else {
         file_descriptor = syscall(SYS_open, param[1], O_RDONLY);
         if (file_descriptor == -1){ 
-            perror("Error al abrir el archivo \n \n");
+            perror("Error al abrir el archivo");
         } else {
             bytes_read = syscall(SYS_read, file_descriptor, buffer, sizeof(buffer));
             if (bytes_read == -1){ 
-                perror("Error al leer el archivo \n \n");
+                perror("Error al leer el archivo");
             } else {
                 write(STDOUT_FILENO, buffer, bytes_read); 
                 syscall(SYS_close, file_descriptor);

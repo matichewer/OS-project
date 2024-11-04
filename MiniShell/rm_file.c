@@ -13,7 +13,7 @@ void main(int argc, char *param[]){
 		if (resultado == 0){
 			printf("Archivo eliminado exitosamente.\n\n");
 		} else {
-			perror("Error al eliminar el archivo. \n\n");
+			perror("Error al eliminar el archivo");
 		}
 	}
 }

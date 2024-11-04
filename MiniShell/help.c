@@ -22,19 +22,14 @@ void main(){
 	printf("        Guia de uso: touch [ruta/Nombre_del_archivo]\n\n");
 		
 	printf("  ls\n");
-	printf("        Lista el contenido de un directorio. Si no se ingresa parametro se lista el directorio actual.\n");
+	printf("        Lista el contenido de un directorio\n");
 	printf("        Guia de uso: ls [ruta/Nombre_del_directorio]\n\n");
 		
 	printf("  cat\n");
-	printf("        Visualizar el contenido de un un archivo\n");
+	printf("        Visualizar el contenido de un archivo\n");
 	printf("        Guia de uso: cat [ruta/Nombre_del_archivo]\n\n");
 		
 	printf("  chmod\n");
-	printf("        Modifica los permisos de un archivo\n");
-	printf("        Guia de uso: chmod [ruta/Nombre_del_archivo] [Permiso]\n");
-	printf("        Los comandos de los [permisos] son:\n");
-	printf("            Escritura: '-le'\n");
-	printf("            Lectura: '-es'\n");
-	printf("            Ejecucion: '-ej'\n");
-	printf("            Lectura y escritura: '-lees'\n\n");	
+	printf("        Modifica los permisos de un archivo/directorio\n");
+	printf("        Guia de uso: chmod [ruta/Nombre_del_archivo] [+r | -r | +w | -w | +x | -x]\n\n");
 }
