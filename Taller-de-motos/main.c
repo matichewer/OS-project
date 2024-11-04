@@ -10,16 +10,11 @@ sem_t pintar_moto;
 sem_t equipar_moto;
 
 // Funciones de cada operario
-void* operario_arma_ruedas(void* arg) {
+void* operario_arma_rueda(void* arg) {
     while(1) {
         sem_wait(&armar_ruedas);
-        printf("Poniendo primer rueda...\n");
+        printf("Operario 1: poniendo una rueda...\n");
         sleep(1);
-
-        sem_wait(&armar_ruedas);
-        printf("Poniendo segunda rueda...\n");
-        sleep(1);
-
         sem_post(&armar_cuadro);
     }
 }
@@ -27,7 +22,8 @@ void* operario_arma_ruedas(void* arg) {
 void* operario_arma_cuadro(void* arg) {
     while(1) {
         sem_wait(&armar_cuadro);
-        printf("Armando cuadro...\n");
+        sem_wait(&armar_cuadro);
+        printf("Operario 2: armando cuadro...\n");
         sleep(1);
         sem_post(&agregar_motor); 
     }
@@ -36,7 +32,7 @@ void* operario_arma_cuadro(void* arg) {
 void* operario_agrega_motor(void* arg) {
     while(1){
         sem_wait(&agregar_motor);        
-        printf("Agregando motor...\n");
+        printf("Operario 3: agregando motor...\n");
         sleep(1);
         sem_post(&pintar_moto);
     }
@@ -45,7 +41,7 @@ void* operario_agrega_motor(void* arg) {
 void* operario_pinta_rojo(void* arg) {
     while(1) {
         sem_wait(&pintar_moto);        
-        printf("Pintando moto de rojo...\n");
+        printf("Operario 4: pintando moto de rojo...\n");
         sleep(1);
         sem_post(&equipar_moto);
     }    
@@ -54,7 +50,7 @@ void* operario_pinta_rojo(void* arg) {
 void* operario_pinta_verde(void* arg) {
     while(1) {
         sem_wait(&pintar_moto);        
-        printf("Pintando moto de verde...\n");
+        printf("Operario 5: pintando moto de verde...\n");
         sleep(1);
         sem_post(&equipar_moto);
     }
@@ -69,7 +65,7 @@ void* operario_equipa_moto(void* arg) {
         sem_post(&armar_ruedas); // para segunda rueda
 
         sem_wait(&equipar_moto);    
-        printf("Equipando moto...\n\n");
+        printf("Operario 6: equipando moto...\n\n");
         sleep(1);
         sem_post(&armar_ruedas); // para primer rueda
         sem_post(&armar_ruedas); // para segunda rueda
@@ -85,7 +81,7 @@ int main() {
     sem_init(&pintar_moto, 0, 0);
     sem_init(&equipar_moto, 0, 0);
 
-    pthread_create(&operarios[0], NULL, operario_arma_ruedas, NULL);
+    pthread_create(&operarios[0], NULL, operario_arma_rueda, NULL);
     pthread_create(&operarios[1], NULL, operario_arma_cuadro, NULL);
     pthread_create(&operarios[2], NULL, operario_agrega_motor, NULL);
     pthread_create(&operarios[3], NULL, operario_pinta_rojo, NULL);
