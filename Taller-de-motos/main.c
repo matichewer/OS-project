@@ -59,8 +59,6 @@ void* operario_pinta_verde(void* arg) {
 void* operario_equipa_moto(void* arg) {
     while(1){
         sem_wait(&equipar_moto);
-        printf("No hay equipamiento extra, comenzando a armar otra moto...\n\n");
-        sleep(1);
         sem_post(&armar_ruedas); // para primer rueda
         sem_post(&armar_ruedas); // para segunda rueda
 
