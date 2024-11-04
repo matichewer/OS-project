@@ -79,7 +79,7 @@ void* operario_equipa_moto(void* arg) {
 int main() {
     pthread_t operarios[6];
 
-    sem_init(&armar_ruedas, 0, 1);
+    sem_init(&armar_ruedas, 0, 2);
     sem_init(&armar_cuadro, 0, 0);
     sem_init(&agregar_motor, 0, 0);
     sem_init(&pintar_moto, 0, 0);
