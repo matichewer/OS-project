@@ -25,12 +25,13 @@ int pipe_pedido_hamburguesa[2];
 int pipe_pedido_vegano[2];
 int pipe_pedido_papas[2];
 
-int pipe_cliente_cajero[2];
-int pipe_clienteVIP_cajero[2];
+int pipe_hay_clientes[2];
+int pipe_cliente[2];
+int pipe_clienteVIP[2];
 
-int pipe_despacho_hamburguesa[2];
-int pipe_despacho_vegano[2];
-int pipe_despacho_papas[2];
+int pipe_hamburguesa[2];
+int pipe_vegano[2];
+int pipe_papas[2];
 
 void empleado1();
 void empleado2();
@@ -39,16 +40,19 @@ void cajero();
 void cliente(int id);
 void clienteVIP(int id);
 
+void enviar_pedido(int* pedido);
+
 int main()
 {
     pipe(pipe_pedido_hamburguesa);
     pipe(pipe_pedido_vegano);
     pipe(pipe_pedido_papas);
-    pipe(pipe_cliente_cajero);
-    pipe(pipe_clienteVIP_cajero);
-    pipe(pipe_despacho_hamburguesa);
-    pipe(pipe_despacho_vegano);
-    pipe(pipe_despacho_papas);
+    pipe(pipe_hay_clientes);
+    pipe(pipe_cliente);
+    pipe(pipe_clienteVIP);
+    pipe(pipe_hamburguesa);
+    pipe(pipe_vegano);
+    pipe(pipe_papas);
 
     // El primer empleado se encarga de cocinar las hamburguesas simples
     pid_t pid_empleado1 = fork();
@@ -59,15 +63,17 @@ int main()
         close(pipe_pedido_vegano[1]);
         close(pipe_pedido_papas[0]);
         close(pipe_pedido_papas[1]);
-        close(pipe_cliente_cajero[0]);
-        close(pipe_cliente_cajero[1]);
-        close(pipe_clienteVIP_cajero[0]);
-        close(pipe_clienteVIP_cajero[1]);
-        close(pipe_despacho_hamburguesa[0]);
-        close(pipe_despacho_vegano[0]);
-        close(pipe_despacho_vegano[1]);
-        close(pipe_despacho_papas[0]);
-        close(pipe_despacho_papas[1]);
+        close(pipe_hay_clientes[0]);
+        close(pipe_hay_clientes[1]);
+        close(pipe_cliente[0]);
+        close(pipe_cliente[1]);
+        close(pipe_clienteVIP[0]);
+        close(pipe_clienteVIP[1]);
+        close(pipe_hamburguesa[0]);
+        close(pipe_vegano[0]);
+        close(pipe_vegano[1]);
+        close(pipe_papas[0]);
+        close(pipe_papas[1]);
 
         empleado1();
         exit(0);
@@ -87,15 +93,17 @@ int main()
         close(pipe_pedido_vegano[1]);
         close(pipe_pedido_papas[0]);
         close(pipe_pedido_papas[1]);
-        close(pipe_cliente_cajero[0]);
-        close(pipe_cliente_cajero[1]);
-        close(pipe_clienteVIP_cajero[0]);
-        close(pipe_clienteVIP_cajero[1]);
-        close(pipe_despacho_hamburguesa[0]);
-        close(pipe_despacho_hamburguesa[1]);
-        close(pipe_despacho_vegano[0]);
-        close(pipe_despacho_papas[0]);
-        close(pipe_despacho_papas[1]);
+        close(pipe_cliente[0]);
+        close(pipe_cliente[1]);
+        close(pipe_hay_clientes[0]);
+        close(pipe_hay_clientes[1]);
+        close(pipe_clienteVIP[0]);
+        close(pipe_clienteVIP[1]);
+        close(pipe_hamburguesa[0]);
+        close(pipe_hamburguesa[1]);
+        close(pipe_vegano[0]);
+        close(pipe_papas[0]);
+        close(pipe_papas[1]);
 
         empleado2();
         exit(0);
@@ -115,15 +123,17 @@ int main()
         close(pipe_pedido_vegano[0]);
         close(pipe_pedido_vegano[1]);
         close(pipe_pedido_papas[1]);
-        close(pipe_cliente_cajero[0]);
-        close(pipe_cliente_cajero[1]);
-        close(pipe_clienteVIP_cajero[0]);
-        close(pipe_clienteVIP_cajero[1]);
-        close(pipe_despacho_hamburguesa[0]);
-        close(pipe_despacho_hamburguesa[1]);
-        close(pipe_despacho_vegano[0]);
-        close(pipe_despacho_vegano[1]);
-        close(pipe_despacho_papas[0]);
+        close(pipe_hay_clientes[0]);
+        close(pipe_hay_clientes[1]);
+        close(pipe_cliente[0]);
+        close(pipe_cliente[1]);
+        close(pipe_clienteVIP[0]);
+        close(pipe_clienteVIP[1]);
+        close(pipe_hamburguesa[0]);
+        close(pipe_hamburguesa[1]);
+        close(pipe_vegano[0]);
+        close(pipe_vegano[1]);
+        close(pipe_papas[0]);
 
         empleado3y4(3);
         exit(0);
@@ -142,15 +152,17 @@ int main()
         close(pipe_pedido_vegano[0]);
         close(pipe_pedido_vegano[1]);
         close(pipe_pedido_papas[1]);
-        close(pipe_cliente_cajero[0]);
-        close(pipe_cliente_cajero[1]);
-        close(pipe_clienteVIP_cajero[0]);
-        close(pipe_clienteVIP_cajero[1]);
-        close(pipe_despacho_hamburguesa[0]);
-        close(pipe_despacho_hamburguesa[1]);
-        close(pipe_despacho_vegano[0]);
-        close(pipe_despacho_vegano[1]);
-        close(pipe_despacho_papas[0]);
+        close(pipe_hay_clientes[0]);
+        close(pipe_hay_clientes[1]);
+        close(pipe_cliente[0]);
+        close(pipe_cliente[1]);
+        close(pipe_clienteVIP[0]);
+        close(pipe_clienteVIP[1]);
+        close(pipe_hamburguesa[0]);
+        close(pipe_hamburguesa[1]);
+        close(pipe_vegano[0]);
+        close(pipe_vegano[1]);
+        close(pipe_papas[0]);
 
         empleado3y4(4);
         exit(0);
@@ -167,14 +179,15 @@ int main()
         close(pipe_pedido_hamburguesa[0]);
         close(pipe_pedido_vegano[0]);
         close(pipe_pedido_vegano[0]);
-        close(pipe_cliente_cajero[1]);
-        close(pipe_clienteVIP_cajero[1]);
-        close(pipe_despacho_hamburguesa[0]);
-        close(pipe_despacho_hamburguesa[1]);
-        close(pipe_despacho_vegano[0]);
-        close(pipe_despacho_vegano[1]);
-        close(pipe_despacho_papas[0]);
-        close(pipe_despacho_papas[1]);
+        close(pipe_hay_clientes[1]);
+        close(pipe_cliente[1]);
+        close(pipe_clienteVIP[1]);
+        close(pipe_hamburguesa[0]);
+        close(pipe_hamburguesa[1]);
+        close(pipe_vegano[0]);
+        close(pipe_vegano[1]);
+        close(pipe_papas[0]);
+        close(pipe_papas[1]);
 
         cajero();
         exit(0);
@@ -196,12 +209,13 @@ int main()
             close(pipe_pedido_vegano[1]);
             close(pipe_pedido_papas[0]);
             close(pipe_pedido_papas[1]);
-            close(pipe_cliente_cajero[0]);
-            close(pipe_clienteVIP_cajero[0]);
-            close(pipe_clienteVIP_cajero[1]);
-            close(pipe_despacho_hamburguesa[1]);
-            close(pipe_despacho_vegano[1]);
-            close(pipe_despacho_papas[1]);
+            close(pipe_hay_clientes[0]);
+            close(pipe_cliente[0]);
+            close(pipe_clienteVIP[0]);
+            close(pipe_clienteVIP[1]);
+            close(pipe_hamburguesa[1]);
+            close(pipe_vegano[1]);
+            close(pipe_papas[1]);
 
             cliente(i+1);
             exit(0);
@@ -224,12 +238,13 @@ int main()
             close(pipe_pedido_vegano[1]);
             close(pipe_pedido_papas[0]);
             close(pipe_pedido_papas[1]);
-            close(pipe_cliente_cajero[0]);
-            close(pipe_cliente_cajero[1]);
-            close(pipe_clienteVIP_cajero[0]);
-            close(pipe_despacho_hamburguesa[1]);
-            close(pipe_despacho_vegano[1]);
-            close(pipe_despacho_papas[1]);
+            close(pipe_hay_clientes[0]);
+            close(pipe_cliente[0]);
+            close(pipe_cliente[1]);
+            close(pipe_clienteVIP[0]);
+            close(pipe_hamburguesa[1]);
+            close(pipe_vegano[1]);
+            close(pipe_papas[1]);
 
             clienteVIP(i+1);
             exit(0);
@@ -259,13 +274,13 @@ void empleado1()
 {
     while(1)
     {
-        int recibe, envia;
-        read(pipe_pedido_hamburguesa[0], &recibe, sizeof(recibe));
-        printf("El empleado1 comienza a cocinar una hamburguesa\n");
-        sleep(3);
-        envia = HAMBURGUESA;
-        printf("El empleado1 entrega la hamburguesa\n");
-        write(pipe_despacho_hamburguesa[1], &envia, sizeof(envia));
+        int pedido;
+        int hamburguesa = HAMBURGUESA;
+        read(pipe_pedido_hamburguesa[0], &pedido, sizeof(pedido));
+        printf("El empleado 1 comienza a cocinar una hamburguesa\n");
+        usleep(3000);
+        write(pipe_hamburguesa[1], &hamburguesa, sizeof(hamburguesa));
+        printf("El empleado 1 entrega la hamburguesa\n");
     }
 }
 
@@ -273,13 +288,13 @@ void empleado2()
 {
     while(1)
     {
-        int recibe, envia;
-        read(pipe_pedido_vegano[0], &recibe, sizeof(recibe));
-        printf("El empleado2 comienza a cocinar un menu vegano\n");
-        sleep(3);
-        envia = VEGANO;
-        printf("El empleado2 entrega el menu vegano\n");
-        write(pipe_despacho_vegano[1], &envia, sizeof(envia));
+        int pedido;
+        int vegano = VEGANO;
+        read(pipe_pedido_vegano[0], &pedido, sizeof(pedido));
+        printf("El empleado 2 comienza a cocinar un menu vegano\n");
+        usleep(3000);
+        write(pipe_vegano[1], &vegano, sizeof(vegano));
+        printf("El empleado 2 entrega el menu vegano\n");
     }
 }
 
@@ -287,127 +302,137 @@ void empleado3y4(int id)
 {
     while(1)
     {
-        int recibe, envia;
-        read(pipe_pedido_papas[0], &recibe, sizeof(recibe));
-        printf("El empleado%i comienza a cocinar unas papas\n", id);
-        sleep(3);
-        envia = PAPAS;
-        printf("El empleado%i entrega las papas\n", id);
-        write(pipe_despacho_papas[1], &envia, sizeof(envia));
+        int pedido;
+        int papas = PAPAS;
+        read(pipe_pedido_papas[0], &pedido, sizeof(pedido));
+        printf("El empleado %i comienza a cocinar unas papas\n", id);
+        usleep(3000);
+        write(pipe_papas[1], &papas, sizeof(papas));
+        printf("El empleado %i entrega las papas\n", id);
     }
 }
 
 void cajero()
 {
+    fcntl(pipe_clienteVIP[0], F_SETFL, O_NONBLOCK);
+    fcntl(pipe_cliente[0], F_SETFL, O_NONBLOCK);
+
     while(1)
     {
-        int pedido, envia;
+        int pedido, hay_clientes;
 
-        int flags = fcntl(pipe_clienteVIP_cajero[0], F_GETFL, 0);
-        fcntl(pipe_clienteVIP_cajero[0], F_SETFL, flags | O_NONBLOCK);
-        if(read(pipe_clienteVIP_cajero[0], &pedido, sizeof(pedido)) > 0)
+        read(pipe_hay_clientes[0], &hay_clientes, sizeof(int));
+
+        if(read(pipe_clienteVIP[0], &pedido, sizeof(pedido)) != -1)
         {
             printf("Un cliente vip pidio: %s\n", menu[pedido]);
+            enviar_pedido(&pedido);
         }
-        else
+        else if(read(pipe_cliente[0], &pedido, sizeof(pedido)) != -1)
         {
-            read(pipe_cliente_cajero[0], &pedido, sizeof(pedido));
             printf("Un cliente pidio: %s\n", menu[pedido]);
+            enviar_pedido(&pedido);
         }
+    }
+}
 
-        switch(pedido)
+void enviar_pedido(int* pedido)
+{
+    switch(*pedido)
         {
             case (HAMBURGUESA):
             {
-                envia = HAMBURGUESA;
                 printf("El cajero envia el pedido de hamburguesa al empleado 1\n");
-                write(pipe_pedido_hamburguesa[1], &envia, sizeof(envia));
+                write(pipe_pedido_hamburguesa[1], pedido, sizeof(pedido));
                 break;
             }
             case (VEGANO):
             {
-                envia = VEGANO;
                 printf("El cajero envia el pedido de menu vegano al empleado 2\n");
-                write(pipe_pedido_vegano[1], &envia, sizeof(envia));
+                write(pipe_pedido_vegano[1], pedido, sizeof(pedido));
                 break;
             }
             case (PAPAS):
             {
-                envia = PAPAS;
                 printf("El cajero envia el pedido de papas a los empleados 3 y 4\n");
-                write(pipe_pedido_papas[1], &envia, sizeof(envia));
+                write(pipe_pedido_papas[1], pedido, sizeof(pedido));
                 break;
             }
         }
-    }
 }
 
 void cliente(int id)
 {
     srand(time(NULL)*getpid());
-    sleep(rand()%5);
+    sleep(rand()%5 + 1);
     printf("Cliente %i llega al local\n", id);
 
     int pedido = rand() % 3;
+    int hay_clientes = 1;
     printf("El cliente %i pide %s\n", id, menu[pedido]);
-    write(pipe_cliente_cajero[1], &pedido, sizeof(pedido));
+    write(pipe_cliente[1], &pedido, sizeof(pedido));
+    write(pipe_hay_clientes[1], &hay_clientes, sizeof(int));
 
     int retira;
     switch(pedido)
     {
         case (HAMBURGUESA):
         {
-            read(pipe_despacho_hamburguesa[0], &retira, sizeof(retira));
+            read(pipe_hamburguesa[0], &retira, sizeof(retira));
             printf("El cliente %i recibe %s\n", id, menu[retira]);
             break;
         }
         case (VEGANO):
         {
-            read(pipe_despacho_vegano[0], &retira, sizeof(retira));
+            read(pipe_vegano[0], &retira, sizeof(retira));
             printf("El cliente %i recibe %s\n", id, menu[retira]);
             break;
         }
         case (PAPAS):
         {
-            read(pipe_despacho_papas[0], &retira, sizeof(retira));
+            read(pipe_papas[0], &retira, sizeof(retira));
             printf("El cliente %i recibe %s\n", id, menu[retira]);
             break;
         }
     }
+
     printf("El cliente %i se va del local\n", id);
 }
 
 void clienteVIP(int id)
 {
     srand(time(NULL)*getpid());
-    sleep(rand()%5);
+    sleep(rand()%5 + 1);
     printf("Cliente vip %i llega al local\n", id);
 
     int pedido = rand() % 3;
+    int hay_clientes = 1;
     printf("El cliente vip %i pide %s\n", id, menu[pedido]);
-    write(pipe_clienteVIP_cajero[1], &pedido, sizeof(pedido));
+    write(pipe_clienteVIP[1], &pedido, sizeof(pedido));
+    write(pipe_hay_clientes[1], &hay_clientes, sizeof(int));
 
     int retira;
     switch(pedido)
     {
         case (HAMBURGUESA):
         {
-            read(pipe_despacho_hamburguesa[0], &retira, sizeof(retira));
+            read(pipe_hamburguesa[0], &retira, sizeof(retira));
             printf("El cliente vip %i recibe %s\n", id, menu[retira]);
             break;
         }
         case (VEGANO):
         {
-            read(pipe_despacho_vegano[0], &retira, sizeof(retira));
+            read(pipe_vegano[0], &retira, sizeof(retira));
             printf("El cliente vip %i recibe %s\n", id, menu[retira]);
             break;
         }
         case (PAPAS):
         {
-            read(pipe_despacho_papas[0], &retira, sizeof(retira));
-            printf("El cliente vip %i recibe %s\n", id, menu[retira]);
+            read(pipe_papas[0], &retira, sizeof(retira));
+            printf("El cliente %i recibe %s\n", id, menu[retira]);
             break;
         }
     }
+
     printf("El cliente vip %i se va del local\n", id);
 }
