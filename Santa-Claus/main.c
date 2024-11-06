@@ -13,7 +13,7 @@
 
 sem_t sem_despierta_santa;
 sem_t sem_elfo_vacio, sem_elfo_lleno, sem_elfo_grupo, sem_elfo_mutex, sem_elfo_ayudado;
-sem_t sem_reno_vacio, sem_reno_grupo, sem_reno_mutex, sem_reno_ayudado;
+sem_t sem_reno_vacio, sem_reno_lleno, sem_reno_grupo, sem_reno_mutex, sem_reno_ayudado;
 
 pthread_mutex_t mutex_elfo;
 pthread_mutex_t mutex_reno;
@@ -35,7 +35,7 @@ void* santa(void* args) {
             usleep(UN_SEGUNDO * 2);
             printf("Santa termina de atar los Renos\n");
         } else { // si se pudo hacer el wait, es porque no llegaron todos los Renos
-            sem_post(&sem_reno_grupo); // NO ENTIENDO PARA QUE ESTA ESTO
+            //sem_post(&sem_reno_grupo); // NO ENTIENDO PARA QUE ESTA ESTO
 
             if (sem_trywait(&sem_elfo_grupo) != 0) { // si no se pudo hacer el wait, es porque hay 3 elfos esperandolo
                 printf("Santa ayuda a los Elfos\n");
@@ -43,10 +43,10 @@ void* santa(void* args) {
                 for (int i = 0; i < GRUPO_ELFOS; i++) {
                     sem_post(&sem_elfo_ayudado);
                 }
-                usleep(UN_SEGUNDO * 2);
+                usleep(UN_SEGUNDO * 1.5);
                 printf("Santa termina de ayudar a los Elfos\n");
             } else {
-                sem_post(&sem_elfo_ayudado); // NO ENTIENDO PARA QUE ESTA ESTO
+             //   sem_post(&sem_elfo_ayudado); // NO ENTIENDO PARA QUE ESTA ESTO
             }
         }
         printf("Santa se va a dormir\n");
@@ -56,28 +56,51 @@ void* santa(void* args) {
 }
 
 void* reno(void* args) {
-    sem_wait(&sem_reno_grupo);
-    pthread_mutex_lock(&mutex_reno); // un solo debe despertar a Santa
-    if (sem_trywait(&sem_reno_vacio) != 0) { // el 9no reno debe despertar a Santa
-        printf("Reno llega. Ya somos 9, entonces busca a santa\n");
-        sem_post(&sem_despierta_santa);
-        //usleep(UN_SEGUNDO);
-    } else { 
-        printf("Reno llega. Espera en la cabaña\n");
-    }
-    pthread_mutex_unlock(&mutex_reno);
+    srand(time(NULL) ^ pthread_self());  
+    while(1){
+        if ((rand() % 10) < 5) {
+           // printf("Reno está de vacaciones\n");
+            usleep(UN_SEGUNDO * 4);
+        } else {
+            sem_wait(&sem_reno_grupo);
+            pthread_mutex_lock(&mutex_reno); // un solo debe despertar a Santa
+            if (sem_trywait(&sem_reno_vacio) != 0) { // el 9no reno debe despertar a Santa
+                printf("Reno llega. Ya somos 9, entonces busca a santa\n");
+                sem_post(&sem_despierta_santa);
+                //usleep(UN_SEGUNDO);
+            } else { 
+                printf("Reno llega. Espera en la cabaña\n");
+            }
+            pthread_mutex_unlock(&mutex_reno);
 
-    sem_wait(&sem_reno_ayudado);
-    usleep(UN_SEGUNDO * 2);
-    printf("Reno enganchado al trineo!\n");
-    //usleep(UN_SEGUNDO);
+            sem_wait(&sem_reno_ayudado);
+            usleep(UN_SEGUNDO * 1.5);
+            printf("Reno enganchado al trineo!\n");
+            //usleep(UN_SEGUNDO);
+
+
+            pthread_mutex_lock(&mutex_reno);
+            if (sem_trywait(&sem_reno_lleno) == 0) { // si se pudo hacer el wait, es porque ya se engancharon 9 renos
+                sem_post(&sem_reno_vacio); 
+            } else {
+                //printf("Renos: \n\n");
+                usleep(UN_SEGUNDO * 2);
+                for (int i = 0; i < CANT_RENOS; i++) {
+                    sem_post(&sem_reno_grupo);
+                }
+                usleep(UN_SEGUNDO);
+            }
+            pthread_mutex_unlock(&mutex_reno);
+        }
+    }
 
     return NULL;
 }
 
 void* elfo(void* args) {
+    srand(time(NULL) ^ pthread_self());
     while (1) {
-        if ((rand() % 10) < 5) {
+        if ((rand() % 10) < 3) {
             sem_wait(&sem_elfo_grupo);
             pthread_mutex_lock(&mutex_elfo);
             printf("Elfo tiene un problema\n");
@@ -93,7 +116,7 @@ void* elfo(void* args) {
 
             // Esperar ayuda Santa
             sem_wait(&sem_elfo_ayudado);
-            usleep(UN_SEGUNDO);
+            usleep(UN_SEGUNDO * 1);
             printf("Elfo es ayudado por Santa\n");
             //usleep(UN_SEGUNDO);
 
@@ -101,7 +124,7 @@ void* elfo(void* args) {
             if (sem_trywait(&sem_elfo_lleno) == 0) { // si se pudo hacer el wait, es porque ya fueron ayudados 3 elfos
                 sem_post(&sem_elfo_vacio); 
             } else {
-                printf("Elfo: Soy el ultimo, permito ingresar nuevo grupo elfos\n\n");
+                printf("Elfo: ya nos ayudó Santa a los 3 Elfos, ya pueden ingresar nuevos elfos\n\n");
                 //usleep(UN_SEGUNDO);
                 for (int i = 0; i < GRUPO_ELFOS; i++) {
                     sem_post(&sem_elfo_grupo);
@@ -110,7 +133,7 @@ void* elfo(void* args) {
             }
             pthread_mutex_unlock(&mutex_elfo);
         } else {
-            printf("Elfo trabaja sin problemas\n");
+        //    printf("Elfo trabaja sin problemas\n");
             usleep(UN_SEGUNDO * 4);
         }
     }
@@ -119,6 +142,7 @@ void* elfo(void* args) {
 
 
 int main() {
+    srand(time(NULL));
     pthread_t t_santa;
     pthread_t t_reno[CANT_RENOS];
     pthread_t t_elfo[CANT_ELFOS];
@@ -134,6 +158,7 @@ int main() {
     sem_init(&sem_elfo_ayudado, 0, 0);
 
     sem_init(&sem_reno_vacio, 0, CANT_RENOS-1); // 8 porque el 9no llama a Santa
+    sem_init(&sem_reno_lleno, 0, 0);
     sem_init(&sem_reno_grupo, 0, CANT_RENOS);
     sem_init(&sem_reno_ayudado, 0, 0);
 
