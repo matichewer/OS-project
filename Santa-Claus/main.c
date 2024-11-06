@@ -85,7 +85,7 @@ void* elfo(void* args) {
             if (sem_trywait(&sem_elfo_vacio) == 0) { // si se pudo hacer el wait, es porque todavia no son 3 elfos
                 sem_post(&sem_elfo_lleno); // suma un elfo al grupo
             } else {
-                printf("Elfos: Somos %d elfos, despertamos a Santa\n", GRUPO_ELFOS);
+                printf("Elfos: Somos %d elfos, queremos despertar a Santa\n", GRUPO_ELFOS);
                 sem_post(&sem_despierta_santa);
                 usleep(UN_SEGUNDO);
             }
