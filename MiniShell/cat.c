@@ -14,7 +14,7 @@ void main(int argc,char *param[]){
     if(param[1]==NULL){
         printf("Falta un introducir un parametro.\n \n");
     } else {
-        file_descriptor = syscall(SYS_open, param[1], O_RDONLY);
+        file_descriptor = syscall(SYS_fsopen, param[1], O_RDONLY);
         if (file_descriptor == -1){ 
             perror("Error al abrir el archivo");
         } else {
