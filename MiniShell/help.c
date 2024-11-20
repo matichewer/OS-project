@@ -12,10 +12,6 @@ void main(){
 	printf("  rm_dir\n");
 	printf("        Elimina un directorio\n");
 	printf("        Guia de uso: rm_dir [ruta/Nombre_del_directorio]\n\n");
-
-	printf("  rm_file\n");
-	printf("        Elimina un archivo\n");
-	printf("        Guia de uso: rm_file [ruta/Nombre_del_archivo]\n\n");
 		
 	printf("  touch\n");
 	printf("        Crea un archivo\n");

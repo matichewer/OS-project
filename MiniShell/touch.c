@@ -1,26 +1,20 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <sys/syscall.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <dirent.h>
-#include <fcntl.h>
 
 void main(int argc, char *param[]){
-	int file_descriptor;
-    
+	FILE *f;
+    char file[100];
     if (param[1]==NULL) {
         printf("Falta un introducir un parametro.\n \n");
     }
 	else {    
-        file_descriptor = syscall(SYS_open, param[1], O_CREAT );
-        if (file_descriptor == -1){
+      		strncpy(file, param[1], sizeof(file));
+		f = fopen(file, "w+");
+        if (f == NULL){
             perror("Error al abrir el archivo");
         } else {
-            syscall(SYS_close, file_descriptor);
             printf("Archivo fue creado exitosamente.\n\n");
         }
+	fclose(f);
     }
 }

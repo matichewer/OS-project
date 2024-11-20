@@ -1,30 +1,28 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/syscall.h>
-#include <fcntl.h>
 
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 1000
 
 void main(int argc,char *param[]){
 
-    int file_descriptor;
-    char buffer[2048];
-    ssize_t bytes_read;
+    char dir[100];
         
     if(param[1]==NULL){
         printf("Falta un introducir un parametro.\n \n");
     } else {
-        file_descriptor = syscall(SYS_fsopen, param[1], O_RDONLY);
-        if (file_descriptor == -1){ 
-            perror("Error al abrir el archivo");
-        } else {
-            bytes_read = syscall(SYS_read, file_descriptor, buffer, sizeof(buffer));
-            if (bytes_read == -1){ 
-                perror("Error al leer el archivo");
-            } else {
-                write(STDOUT_FILENO, buffer, bytes_read); 
-                syscall(SYS_close, file_descriptor);
-            }
-        }
+        strncpy(dir, param[1], sizeof(dir));
+	FILE *f = fopen(dir, "r");
+	char leido[MAX];
+	if (f != NULL){
+		while (fgets(leido, MAX, f) != NULL){
+			printf(leido);
+		}
+	}
+	else {  
+		printf("Error al abrir el archivo");
+          }
+	fclose(f);
+        
     }
 }
