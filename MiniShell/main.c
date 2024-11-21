@@ -31,6 +31,8 @@ int main() {
         param1 = strtok(NULL, fin);
         param2 = strtok(NULL, fin);
 
+	if ((comando != NULL) && (strlen(comando) != 0)) {
+
         if (strcmp(comando, "exit") == 0) {
             printf("Gracias por usar la Minishell.\nAutores: Franco Popp y Matias David Schwerdt.\n");
             ejecutando = 0;
@@ -59,6 +61,7 @@ int main() {
                 waitpid(pid, NULL, 0);
             }
         }
+	}
     }
 
     return 0;
