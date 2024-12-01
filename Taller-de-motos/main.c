@@ -69,7 +69,7 @@ void* chasis_routine()
     {
         sem_wait(&sem_chasis);
         sem_wait(&sem_chasis);
-        printf("Operario 2 produce_ Chasis\n");
+        printf("Operario 2 produce: Chasis\n");
         sleep(1);
         sem_post(&sem_motor);
     }
