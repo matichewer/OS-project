@@ -8,7 +8,7 @@ void main(int argc, char *param[]){
         printf("Falta un introducir un parametro.\n \n");
     }
 	else {    
-      		strncpy(file, param[1], sizeof(file));
+      	strncpy(file, param[1], sizeof(file));
 		f = fopen(file, "w+");
         if (f == NULL){
             perror("Error al abrir el archivo");
