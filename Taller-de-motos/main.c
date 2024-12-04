@@ -4,125 +4,122 @@
 #include <semaphore.h>
 #include <unistd.h>
 
-sem_t sem_ruedas, sem_chasis, sem_motor, sem_pintura, sem_mejora, sem_ciclo;
+sem_t armar_ruedas, armar_cuadro, agregar_motor, pintar_moto, equipar_moto, sem_ciclo;
 
-void* ruedas_routine();
-void* chasis_routine();
-void* motor_routine();
-void* pintura_verde_routine();
-void* pintura_roja_routine();
-void* mejora_routine();
+// Funciones de ada operario
+void* operario_arma_rueda();
+void* operario_arma_cuadro();
+void* operario_agrega_motor();
+void* operario_pinta_verde();
+void* operario_pinta_rojo();
+void* operario_equipa_moto();
 
 int main()
 {
-    //   1 1 2 3 (4 o 5) 1 1 2 3 (4 o 5) 6
-    // AABC(DoE)AABC(DoE)F AABC(DoE)AABC(DoE)F
-    pthread_t tid_op1, tid_op2, tid_op3, tid_op4, tid_op5,tid_op6;
+    pthread_t operarios[6];
 
-    sem_init(&sem_ruedas, 0, 2);
-    sem_init(&sem_chasis, 0, 0);
-    sem_init(&sem_motor, 0, 0);
-    sem_init(&sem_pintura, 0, 0);
-    sem_init(&sem_mejora, 0, 1);
+    sem_init(&armar_ruedas, 0, 2);
+    sem_init(&armar_cuadro, 0, 0);
+    sem_init(&agregar_motor, 0, 0);
+    sem_init(&pintar_moto, 0, 0);
+    sem_init(&equipar_moto, 0, 1);
     sem_init(&sem_ciclo, 0, 2);
 
-    pthread_create(&tid_op1, NULL, ruedas_routine, NULL);
-    pthread_create(&tid_op2, NULL, chasis_routine, NULL);
-    pthread_create(&tid_op3, NULL, motor_routine, NULL);
-    pthread_create(&tid_op4, NULL, pintura_verde_routine, NULL);
-    pthread_create(&tid_op5, NULL, pintura_roja_routine, NULL);
-    pthread_create(&tid_op6, NULL, mejora_routine, NULL);
+    pthread_create(&operarios[0], NULL, operario_arma_rueda, NULL);
+    pthread_create(&operarios[1], NULL, operario_arma_cuadro, NULL);
+    pthread_create(&operarios[2], NULL, operario_agrega_motor, NULL);
+    pthread_create(&operarios[3], NULL, operario_pinta_verde, NULL);
+    pthread_create(&operarios[4], NULL, operario_pinta_rojo, NULL);
+    pthread_create(&operarios[5], NULL, operario_equipa_moto, NULL);
 
-    pthread_join(tid_op1, NULL);
-    pthread_join(tid_op2, NULL);
-    pthread_join(tid_op3, NULL);
-    pthread_join(tid_op4, NULL);
-    pthread_join(tid_op5, NULL);
-    pthread_join(tid_op6, NULL);
+    for(int i = 0; i < 6; i++)
+    {
+            pthread_join(operarios[i], NULL);
+    }
 
-    sem_destroy(&sem_ruedas);
-    sem_destroy(&sem_chasis);
-    sem_destroy(&sem_motor);
-    sem_destroy(&sem_pintura);
-    sem_destroy(&sem_mejora);
+    sem_destroy(&armar_ruedas);
+    sem_destroy(&armar_cuadro);
+    sem_destroy(&agregar_motor);
+    sem_destroy(&pintar_moto);
+    sem_destroy(&equipar_moto);
     sem_destroy(&sem_ciclo);
 
     return 0;
 }
 
-void* ruedas_routine()
+void* operario_arma_rueda()
 {
     while(1)
     {
         sem_wait(&sem_ciclo);
-        sem_wait(&sem_ruedas);
-        printf("Operario 1 produce: Rueda\n");
+        sem_wait(&armar_ruedas);
+        printf("Operario 1: poniendo una rueda...\n");
         sleep(1);
-        sem_post((&sem_chasis));
+        sem_post(&armar_cuadro);
     }
     return NULL;
 }
 
-void* chasis_routine()
+void* operario_arma_cuadro()
 {
     while(1)
     {
-        sem_wait(&sem_chasis);
-        sem_wait(&sem_chasis);
-        printf("Operario 2 produce: Chasis\n");
+        sem_wait(&armar_cuadro);
+        sem_wait(&armar_cuadro);
+        printf("Operario 2: armando cuadro...\n");
         sleep(1);
-        sem_post(&sem_motor);
+        sem_post(&agregar_motor);
     }
     return NULL;
 }
 
-void* motor_routine()
+void* operario_agrega_motor()
 {
     while(1)
     {
-        sem_wait(&sem_motor);
-        printf("Operario 3 produce: Motor\n");
+        sem_wait(&agregar_motor);
+        printf("Operario 3: agregando motor...\n");
         sleep(1);
-        sem_post(&sem_pintura);
+        sem_post(&pintar_moto);
     }
     return NULL;
 }
 
-void* pintura_verde_routine()
+void* operario_pinta_verde()
 {
     while(1)
     {
-        sem_wait(&sem_pintura);
-        printf("Operario 4 pinta: Verde\n");
+        sem_wait(&pintar_moto);
+        printf("Operario 4: pintando moto de verde...\n");
         sleep(1);
-        sem_post(&sem_ruedas);
-        sem_post(&sem_ruedas);
-        sem_post(&sem_mejora);
+        sem_post(&armar_ruedas);
+        sem_post(&armar_ruedas);
+        sem_post(&equipar_moto);
     }
     return NULL;
 }
 
-void* pintura_roja_routine()
+void* operario_pinta_rojo()
 {
     while(1)
     {
-        sem_wait(&sem_pintura);
-        printf("Operario 5 pinta: Rojo\n");
+        sem_wait(&pintar_moto);
+        printf("Operario 5: pintando moto de rojo...\n");
         sleep(1);
-        sem_post(&sem_ruedas);
-        sem_post(&sem_ruedas);
-        sem_post(&sem_mejora);
+        sem_post(&armar_ruedas);
+        sem_post(&armar_ruedas);
+        sem_post(&equipar_moto);
     }
     return NULL;
 }
 
-void* mejora_routine()
+void* operario_equipa_moto()
 {
     while(1)
     {
-        sem_wait(&sem_mejora);
-        sem_wait(&sem_mejora);
-        printf("Operario 6 produce: Mejora\n");
+        sem_wait(&equipar_moto);
+        sem_wait(&equipar_moto);
+        printf("Operario 6: equipando mejora...\n");
         sleep(1);
         sem_post(&sem_ciclo);
         sem_post(&sem_ciclo);
@@ -131,4 +128,3 @@ void* mejora_routine()
     }
     return NULL;
 }
-
